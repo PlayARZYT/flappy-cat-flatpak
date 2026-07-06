@@ -1,0 +1,45 @@
+id: org.playarz.flappycat
+runtime: org.freedesktop.Platform
+runtime-version: '23.08'
+sdk: org.freedesktop.Sdk
+command: run-game.sh
+
+finish-args:
+  - --socket=x11
+  - --socket=wayland
+  - --device=dri
+  - --socket=pulseaudio
+  - --share=ipc
+
+modules:
+  - name: python-deps
+    buildsystem: simple
+    build-commands:
+      - pip3 install --verbose --exists-action=i --no-index --find-links="file://${PWD}/vendor" --prefix=/app -r requirements.txt
+    sources:
+      - type: dir
+        path: .
+      - type: shell
+        commands:
+          - pip3 download --no-deps --dest vendor -r requirements.txt
+
+  - name: my-game
+    buildsystem: simple
+    build-commands:
+      - mkdir -p /app/bin
+      - mkdir -p /app/share/my-game
+      
+      # Копируем скрипты
+      - install -m 755 run-game.sh /app/bin/run-game.sh
+      - install -m 644 flappy_cat_port_linux.py /app/share/my-game/flappy_cat_port_linux.py
+      
+      # Копируем только существующие ассеты
+      - install -m 644 background.png /app/share/my-game/background.png
+      - install -m 644 cat.png /app/share/my-game/cat.png
+      - install -m 644 sadcat.png /app/share/my-game/sadcat.png
+      - install -m 644 jump.wav /app/share/my-game/jump.wav
+      - install -m 644 catcrash.wav /app/share/my-game/catcrash.wav
+      - install -m 644 newbest.wav /app/share/my-game/newbest.wav
+    sources:
+      - type: dir
+        path: .
