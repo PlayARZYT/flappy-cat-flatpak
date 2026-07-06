@@ -29,17 +29,25 @@ modules:
       - mkdir -p /app/bin
       - mkdir -p /app/share/my-game
       
+      # Создаем папки для интеграции с меню системы Linux
+      - mkdir -p /app/share/applications
+      - mkdir -p /app/share/icons/hicolor/scalable/apps
+      
       # Копируем скрипты
       - install -m 755 run-game.sh /app/bin/run-game.sh
       - install -m 644 flappy_cat_port_linux.py /app/share/my-game/flappy_cat_port_linux.py
       
-      # Копируем только существующие ассеты
+      # Копируем ассеты для самой игры
       - install -m 644 background.png /app/share/my-game/background.png
       - install -m 644 cat.png /app/share/my-game/cat.png
       - install -m 644 sadcat.png /app/share/my-game/sadcat.png
       - install -m 644 jump.wav /app/share/my-game/jump.wav
       - install -m 644 catcrash.wav /app/share/my-game/catcrash.wav
       - install -m 644 newbest.wav /app/share/my-game/newbest.wav
+      
+      # Копируем ярлык меню и превращаем cat.png в системную иконку приложения
+      - install -m 644 org.playarz.flappycat.desktop /app/share/applications/org.playarz.flappycat.desktop
+      - install -m 644 cat.png /app/share/icons/hicolor/scalable/apps/org.playarz.flappycat.png
     sources:
       - type: dir
         path: .
