@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Flappy Cat
+Comment=Flappy Cat game for Raspberry Pi
+Exec=run-game.sh
+Icon=org.playarz.flappycat
+Terminal=false
+Categories=Game;ArcadeGame;
