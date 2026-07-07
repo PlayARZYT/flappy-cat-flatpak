@@ -14,14 +14,15 @@ finish-args:
 modules:
   - name: python-deps
     buildsystem: simple
+    # Allows pip to access the internet safely during this module's build phase
+    build-options:
+      build-args:
+        - --share=network
     build-commands:
-      - pip3 install --verbose --exists-action=i --no-index --find-links="file://${PWD}/vendor" --prefix=/app -r requirements.txt
+      - pip3 install --verbose --exists-action=i --prefix=/app -r requirements.txt
     sources:
       - type: dir
         path: .
-      - type: shell
-        commands:
-          - pip3 download --no-deps --dest vendor -r requirements.txt
 
   - name: my-game
     buildsystem: simple
@@ -31,13 +32,14 @@ modules:
       
       # Создаем папки для интеграции с меню системы Linux
       - mkdir -p /app/share/applications
-      - mkdir -p /app/share/icons/hicolor/scalable/apps
+      # Возвращаем на стандартный максимальный размер 512x512
+      - mkdir -p /app/share/icons/hicolor/512x512/apps
       
       # Копируем скрипты
       - install -m 755 run-game.sh /app/bin/run-game.sh
       - install -m 644 flappy_cat_port_linux.py /app/share/my-game/flappy_cat_port_linux.py
       
-      # Копируем ассеты для самой игры
+      # Копируем ассеты для самой игры (оригинальные файлы без изменений)
       - install -m 644 background.png /app/share/my-game/background.png
       - install -m 644 cat.png /app/share/my-game/cat.png
       - install -m 644 sadcat.png /app/share/my-game/sadcat.png
@@ -45,9 +47,10 @@ modules:
       - install -m 644 catcrash.wav /app/share/my-game/catcrash.wav
       - install -m 644 newbest.wav /app/share/my-game/newbest.wav
       
-      # Копируем ярлык меню и превращаем cat.png в системную иконку приложения
+      # Копируем ярлык меню и превращаем уменьшенный app-icon.png в системную иконку
       - install -m 644 org.playarz.flappycat.desktop /app/share/applications/org.playarz.flappycat.desktop
-      - install -m 644 cat.png /app/share/icons/hicolor/scalable/apps/org.playarz.flappycat.png
+      # Используем app-icon.png для системного ярлыка
+      - install -m 644 app-icon.png /app/share/icons/hicolor/512x512/apps/org.playarz.flappycat.png
     sources:
       - type: dir
         path: .
